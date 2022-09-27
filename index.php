@@ -53,7 +53,17 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	$server_ip = getHostByName(getHostName());
+	// print_r($server_ip);
+	if (preg_match("/^(127\.0\.|10\.0\.)|(192\.168\.1\.146)|(192\.168\.43\.12)/i", $server_ip) ) {
+		define("ENVIRONMENT", "development");
+		define("BASEURL", "http://localhost/Evan/checklist");
+	} else {
+		define("ENVIRONMENT", "production");
+		define("BASEURL", "https://checklist.evancendekia.com/login");
+	}
+	// print_r(ENVIRONMENT);
 
 /*
  *---------------------------------------------------------------

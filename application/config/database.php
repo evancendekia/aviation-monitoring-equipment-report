@@ -73,12 +73,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+if(ENVIRONMENT !== 'production') {
+    $db = [
+            'username' => 'root',
+            'password' => '',
+            'database' => 'evancend_checklist',
+            'hostname' => 'localhost'
+    ];
+} else {
+    $db = [
+            'username' => 'evancend',
+            'password' => 'S).aF58Uy4x4uJ',
+            'database' => 'evancend_checklist',
+            'hostname' => 'localhost'
+    ];
+}
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'evancend',
-	'password' => 'S).aF58Uy4x4uJ',
-	'database' => 'evancend_checklist',
+	'hostname' => $db['hostname'],
+	'username' => $db['username'],
+	'password' => $db['password'],
+	'database' => $db['database'],
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
