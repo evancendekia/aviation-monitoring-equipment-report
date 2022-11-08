@@ -1,5 +1,25 @@
 <div class="row">   
     <div class="col-xl-6 col-lg-12">
+        <a href="<?php echo base_url('checklist'); ?>">
+            <div class="card default-widget-count">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="mr-3 left b-primary">
+                            <div class="bg bg-primary"></div>
+                            <i class="icofont icofont-checked"></i>
+                        </div>
+                        <div class="media-body align-self-center">
+                            <h4 class="mt-0">Checklist Harian</h4>
+                            <span>List of Daily Checklist</span>
+                            <i class="icofont icofont-checked icon-bg"></i>
+                            <!--<i class="icon-bg"></i>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-6 col-lg-12">
         <a href="<?php echo base_url('sarfas'); ?>">
             <div class="card default-widget-count">
                 <div class="card-body">

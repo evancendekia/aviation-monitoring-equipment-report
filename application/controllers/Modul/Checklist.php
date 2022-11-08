@@ -19,12 +19,12 @@ class Checklist extends CI_Controller {
         $data['js'] = 'js_checklist';
 		$data['alerts'] = $this->session->flashdata('alerts');
 		$data['role'] = $role = $this->session->userdata('role');
-		$data['laporan'] = $this->GetAllLaporanData(10,null,null);
-		$data['laporan_all'] = $this->GetAllLaporanDataAll();
+		$data['checklist'] = $this->GetAllChecklistData(10,null,null);
+		// $data['laporan'] = $this->GetAllLaporanData(10,null,null);
+		// $data['laporan_all'] = $this->GetAllLaporanDataAll();
 		$data['sarfas'] = $this->GetAllSarfasData();
 		$this->load->view('layout/layout',$data);
-        // print_r($data['laporan']);
-        // print_r($data['laporan_all']);
+        // print_r($data['checklist']);
 	}
 	public function add(){
 	    try{
@@ -261,43 +261,40 @@ class Checklist extends CI_Controller {
 	}
 	private function GetAllSarfasData(){
 		$select = '*';
-	    $table = 'sarfas AS a';
-		$table2 = 'jenis';
-		$join_param = 'id_jenis';
-	    $col = null;
-	    $par = null;
-		$order = null;
-	    return $this->DataModel->GetDataJoin($select,$table,$table2,$join_param,$col,$par,$order);  
+		$table = 'filter';
+		$col = array();
+		$par = array();
+		$order = 'kode ASC';
+		return $this->DataModel->GetData($select,$table,$col,$par,$order);
 	}
-	private function GetAllLaporanData($per_page,$keyword,$nip){
+
+    private function GetAllChecklistData($per_page,$keyword,$nip){
 	    
+		
 		$from = $this->input->get('from');
         $to = $this->input->get('to');
-        $priority = $this->input->get('priority');
-        $status = $this->input->get('status');
+		$equipment = $this->input->get('equipment');
         $urutkan = $this->input->get('urutkan') != NULL ? $this->input->get('urutkan') : 1;
-        
-		$status_text = ['all','Kerusakan dilaporkan', 'Dalam proses', 'Selesai diperbaiki'];
-		$priority_text = ['all','Tinggi', 'Sedang', 'Rendah'];
-	    
+
         $where = null;
-	    !$status ?: $where['a.status_laporan'] = $status_text[$status];
-	    !$priority ?: $where['a.priority'] = $priority_text[$priority];
-        !$from ?: $where['a.tgl >= '] = date_format(date_create_from_format('d/m/Y', $from), 'Y-m-d');
-        !$to ?: $where['a.tgl <= '] = date_format(date_create_from_format('d/m/Y', $to), 'Y-m-d');
+		!$equipment ?: $where['kode'] = $equipment;
+        !$from ?: $where['a.date >= '] = date_format(date_create_from_format('d/m/Y', $from), 'Ymd');
+        !$to ?: $where['a.date <= '] = date_format(date_create_from_format('d/m/Y', $to), 'Ymd');
+
+		$order_text = ['a.date DESC, a.kode ASC', 'a.date ASC, a.kode ASC'];
+
 	    
-		$order_text = ['a.id_laporan DESC', 'a.id_laporan ASC'];
 	    
-        $select = '*';
-	    $table = 'laporan AS a';
+        $select = 'day, date, time, sarfas, group, b.type, b.kode';
+	    $table = 'checklist_value AS a';
         
         $order = $order_text[$urutkan - 1];
+        $order = null;
         $group = null;
 		$join = [
-            ['table' => 'sarfas AS b', 'condition' => 'a.sarfas=b.id_sarfas', 'type' => 'left'],	
-            ['table' => 'jenis AS c', 'condition' => 'b.id_jenis=c.id_jenis', 'type' => 'left']
+            ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left'],	
         ];
-        $url = 'maintenance';
+        $url = 'checklist';
         $like = '';
         // $like = is_string($keyword) ? ['LOWER(NAMA_SUPPLIER)' => strtolower($keyword)] : NULL;
         // return $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group);
@@ -305,6 +302,42 @@ class Checklist extends CI_Controller {
         $laporan['total'] = $this->DataModel->GetTotalDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
         return $laporan;
 	}
+	// private function GetAllLaporanData($per_page,$keyword,$nip){
+	    
+	// 	$from = $this->input->get('from');
+    //     $to = $this->input->get('to');
+    //     $priority = $this->input->get('priority');
+    //     $status = $this->input->get('status');
+    //     $urutkan = $this->input->get('urutkan') != NULL ? $this->input->get('urutkan') : 1;
+        
+	// 	$status_text = ['all','Kerusakan dilaporkan', 'Dalam proses', 'Selesai diperbaiki'];
+	// 	$priority_text = ['all','Tinggi', 'Sedang', 'Rendah'];
+	    
+    //     $where = null;
+	//     !$status ?: $where['a.status_laporan'] = $status_text[$status];
+	//     !$priority ?: $where['a.priority'] = $priority_text[$priority];
+    //     !$from ?: $where['a.tgl >= '] = date_format(date_create_from_format('d/m/Y', $from), 'Y-m-d');
+    //     !$to ?: $where['a.tgl <= '] = date_format(date_create_from_format('d/m/Y', $to), 'Y-m-d');
+	    
+	// 	$order_text = ['a.id_laporan DESC', 'a.id_laporan ASC'];
+	    
+    //     $select = '*';
+	//     $table = 'laporan AS a';
+        
+    //     $order = $order_text[$urutkan - 1];
+    //     $group = null;
+	// 	$join = [
+    //         ['table' => 'sarfas AS b', 'condition' => 'a.sarfas=b.id_sarfas', 'type' => 'left'],	
+    //         ['table' => 'jenis AS c', 'condition' => 'b.id_jenis=c.id_jenis', 'type' => 'left']
+    //     ];
+    //     $url = 'maintenance';
+    //     $like = '';
+    //     // $like = is_string($keyword) ? ['LOWER(NAMA_SUPPLIER)' => strtolower($keyword)] : NULL;
+    //     // return $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group);
+    //     $laporan['data'] = $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
+    //     $laporan['total'] = $this->DataModel->GetTotalDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
+    //     return $laporan;
+	// }
 	
 	private function GetAllLaporanDataAll(){
 	    $from = $this->input->get('from');

@@ -80,6 +80,7 @@ $route['maintenance/approve']['POST'] = 'Modul/Maintenance/approve_laporan';
 
 
 $route['sarfas']['GET'] = 'Modul/Sarfas/index';
+$route['equipment']['GET'] = 'Modul/Equipment/index';
 
 $route['inventory']['GET'] = 'Modul/Inventory/index';
 $route['inventory/add']['GET'] = 'Modul/Inventory/index';

@@ -16,22 +16,25 @@ class DataModel extends CI_Model {
         return $query->num_rows();
     }
 
-    function GetData($select, $table, $col, $par) {
+    function GetData($select, $table, $col, $par, $order = null) {
         $this->db->select($select);
         $this->db->from($table);
         for ($i = 0; $i < count($col); $i++) {
             $this->db->where($col[$i], $par[$i]);
         }
+        !$order ?: $this->db->order_by($order);
         $query = $this->db->get();
         return $query->result_array();
     }
 
-    function GetDataJoin($select, $table, $table2, $join_param, $col, $par, $order = null) {
+    function GetDataJoin($select, $table, $table2, $join_param, $col = [], $par = null, $order = null) {
         $this->db->select($select);
         $this->db->from($table);
         $this->db->join($table2, "$table.$join_param = $table2.$join_param");
-        for ($i = 0; $i < count($col); $i++) {
-            $this->db->where($col[$i], $par[$i]);
+        if($col != null){
+            for ($i = 0; $i < count($col); $i++) {
+                $this->db->where($col[$i], $par[$i]);
+            }
         }
         !$order ?: $this->db->order_by($order);
         $query = $this->db->get();
