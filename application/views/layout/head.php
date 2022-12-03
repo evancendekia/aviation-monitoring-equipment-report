@@ -8,7 +8,7 @@
     
     <link rel="icon" href="<?php echo base_url();?>assets/pertamina/Logo small.png" type="image/x-icon"/>
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/pertamina/Logo small.png" type="image/x-icon"/>
-    <title>Maintenance Report System</title>
+    <title>AME-R - Aviation Monitoring Equipment & Report</title>
     
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <style>

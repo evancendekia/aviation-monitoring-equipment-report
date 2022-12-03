@@ -3,7 +3,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <h3><?php echo $menu;?>
-                                <small>Maintenance Report System</small>
+                                <small>AME-R - Aviation Monitoring Equipment & Report</small>
                             </h3>
                         </div>
                         <div class="col-lg-6">
