@@ -16,7 +16,14 @@
             </div>
         </div>
         <!-- default script -->
-        <?php $this->load->view('layout/script'); ?>
+        
+        <?php 
+            if($data != null){
+                $this->load->view('layout/script',$data); 
+            }else{
+                $this->load->view('layout/script'); 
+            }
+        ?>
         <!-- page script -->
         <?php !isset($js) ?: $this->load->view("pages". (!isset($folder) ? "/$page/" : "/$folder/") .$js);?>
     </body>

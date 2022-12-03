@@ -11,9 +11,9 @@
                 <h5>Laporan Kerusakan</h5>
                 <div class="float-right card-header-right">
                     <div class="btn-group">
-                        <!--<div class="px-2">-->
-                            <!--<button class="btn btn-primary mb-3 mx-2" onclick="printPDF()"><i class="fa fa-download text-white"></i>Download Laporan</button>-->
-                        <!--</div>  -->
+                        <div class="px-2">
+                            <button class="btn btn-primary mb-3 mx-2" onclick="printPDF()"><i class="fa fa-download text-white"></i>Download Laporan</button>
+                        </div> 
                          <?php if($role == 1){?>
                             <!--<div class="px-2">-->
                             <!--    <button type="button" class="btn btn-secondary font-weight-bold" onclick="ShowAddLaporan()">Tambah Laporan</button>-->
@@ -257,8 +257,8 @@
                                         
                                         <tbody>
                                             <tr class="font-weight-bold">
-                                                    <td class="align-middle text-center">IV</td>
-                                                    <td class="align-middle">Safety Equipment</td>
+                                                    <td class="align-middle text-center">V</td>
+                                                    <td class="align-middle">Refueling Equipment<td>
                                                     <td class="align-middle" colspan="3"></td>
                                             </tr>
                                             <tr class="font-weight-bold">

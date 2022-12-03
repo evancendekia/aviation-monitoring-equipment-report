@@ -36,6 +36,7 @@ class Checklist extends CI_Controller {
         $id = $this->input->get('id');
 		$data['checklist'] = $this->GetDetailChecklistData($id);
 		$data['sarfas'] = $this->GetAllSarfasData();
+		$data['data'] = $data;
 		$this->load->view('layout/layout',$data);
         // print_r($data['checklist'][0]);
         // print_r(unserialize($data['checklist'][0]['II_1']));
