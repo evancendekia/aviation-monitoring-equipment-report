@@ -65,8 +65,9 @@ $route['user-delete']['POST'] = 'Master Data/User/delete_user';
 $route['reset-password']['POST'] = 'Master Data/User/reset_password';
 
 $route['checklist']['GET'] = 'Modul/Checklist/index';
-$route['checklist/add']['GET'] = 'Modul/Checklist/index';
+$route['checklist/add']['GET'] = 'Modul/Checklist/add_form';
 $route['checklist/add']['POST'] = 'Modul/Checklist/add';
+$route['checklist/detail']['GET'] = 'Modul/Checklist/detail';
 
 $route['maintenance']['GET'] = 'Modul/Maintenance/index';
 $route['maintenance/add']['GET'] = 'Modul/Maintenance/index';

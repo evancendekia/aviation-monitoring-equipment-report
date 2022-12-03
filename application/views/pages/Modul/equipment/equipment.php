@@ -24,17 +24,17 @@
                                 <th class="text-center text-uppercase text-secondary">Type</th>
                                 <th class="text-center text-uppercase text-secondary">Kode Alat</th>
                                 <th class="text-center text-uppercase text-secondary">Masa Pakai</th>
-                                <th class="align-middle text-center text-uppercase text-secondary">Action</th>
+                                <!-- <th class="align-middle text-center text-uppercase text-secondary">Action</th> -->
                             </tr>
                         </thead>
                         <tbody>
                             <?php $no=1; foreach($filter['data'] as $f){?>
                                 <tr>
-                                    <td class="align-middle text-center"><?php echo $no;?></td>
+                                    <td class="align-middle text-center"><?php echo (10*($page_num-1))+$no;?></td>
                                     <td class="align-middle text-center"><?php echo $f['type'];?> </td>
                                     <td class="align-middle text-center"><?php echo $f['kode'];?></td>
-                                    <td class="align-middle text-center"><?php echo $f['masa_pakai'];?></td>
-                                    <td class="align-middle text-center">
+                                    <td class="align-middle text-center"><?php echo $f['masa_pakai']." Tahun";?></td>
+                                    <!-- <td class="align-middle text-center">
                                         <div class="btn-group">
                                             <a href="">
                                                 <button type="button" class="btn btn-outline-secondary btn-sm text-xs px-2" data-toggle="modal" data-target="#ResetPasswordModal" onClick=''>
@@ -43,7 +43,7 @@
                                                 </button>
                                             </a>
                                         </div>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             <?php $no++;}?>
                         </tbody>

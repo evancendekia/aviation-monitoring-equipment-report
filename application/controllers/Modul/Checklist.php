@@ -14,8 +14,37 @@ class Checklist extends CI_Controller {
     }
 	public function index(){
 		$data['menu'] = 'Modul';
-		$data['page'] = $data['folder'] = 'checklist';
+		$data['page'] = 'checklist';
 		$data['folder'] = $data['menu']."/".$data['page'];
+        $data['js'] = 'js_checklist';
+		$data['alerts'] = $this->session->flashdata('alerts');
+		$data['role'] = $role = $this->session->userdata('role');
+		$data['sarfas'] = $this->GetAllSarfasData();
+		$data['checklist'] = $this->GetAllChecklistData(10,null,null);
+		// $data['laporan'] = $this->GetAllLaporanData(10,null,null);
+		// $data['laporan_all'] = $this->GetAllLaporanDataAll();
+		$this->load->view('layout/layout',$data);
+        // print_r($data['checklist']);
+	}
+	public function detail(){
+		$data['menu'] = 'Modul';
+		$data['page'] = 'detail_checklist';
+		$data['folder'] = $data['menu']."/checklist";
+        $data['js'] = 'js_checklist';
+		$data['alerts'] = $this->session->flashdata('alerts');
+		$data['role'] = $role = $this->session->userdata('role');
+        $id = $this->input->get('id');
+		$data['checklist'] = $this->GetDetailChecklistData($id);
+		$data['sarfas'] = $this->GetAllSarfasData();
+		$this->load->view('layout/layout',$data);
+        // print_r($data['checklist'][0]);
+        // print_r(unserialize($data['checklist'][0]['II_1']));
+	}
+    
+	public function add_form(){
+		$data['menu'] = 'Modul';
+		$data['page'] = 'add_checklist';
+		$data['folder'] = $data['menu']."/checklist";
         $data['js'] = 'js_checklist';
 		$data['alerts'] = $this->session->flashdata('alerts');
 		$data['role'] = $role = $this->session->userdata('role');
@@ -31,7 +60,7 @@ class Checklist extends CI_Controller {
 	    $day =date("l");
 	    $date =date("Ymd");
 	    $time = date("H:i");
-	    $sarfas = $this->input->post('sarfas_value');
+	    $sarfas = $this->input->post('equipment');
 	    $group = $this->input->post('group');
         $truck_conditions_code = array(
             'II_1','II_2','II_3','II_4','II_5',
@@ -65,7 +94,7 @@ class Checklist extends CI_Controller {
             $data[$tank_condition_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$tank_condition_code[$i]);
             $data[$tank_condition_code[$i]] = serialize($data[$tank_condition_code[$i]]);
         };
-        for($i=0;$i<count($tank_condition_code);$i++){
+        for($i=0;$i<count($safety_equipment_code);$i++){
             $data[$safety_equipment_code[$i]]['check'] = $this->input->post('S_'.$safety_equipment_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$safety_equipment_code[$i]) == 1  ? 'C' : '');
             $data[$safety_equipment_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$safety_equipment_code[$i]);
             $data[$safety_equipment_code[$i]] = serialize($data[$safety_equipment_code[$i]]);
@@ -97,31 +126,34 @@ class Checklist extends CI_Controller {
         };
 
         // print_r($input);
-        foreach(array_keys($data) as $key){
-            print_r($key);
-            print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-            print_r($data[$key]);
-            print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-            print_r(unserialize($data[$key]));
-            print_r("<br>");
-        }
+        // foreach(array_keys($data) as $key){
+        //     print_r($key);
+        //     print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        //     print_r($data[$key]);
+        //     print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        //     print_r(unserialize($data[$key]));
+        //     print_r("<br>");
+        // }
         
 	    $data['day'] = $day;
 	    $data['date'] = $date;
 	    $data['time'] = $time;
 	    $data['sarfas'] = $sarfas;
 	    $data['group'] = $group;
-        print_r("<br>");
-        print_r($data);
-        print_r("<br>");
-        $insert = $this->InsertData($data,'checklist_value');
-        print_r($insert);
+        // print_r("<br>");
+        // print_r($data);
+        // print_r("<br>");
+        $this->InsertData($data,'checklist_value');
+		$alerts = GenerateDataAlert('success','Berhasil menambahkan lapora n');
+        // print_r($insert);
 	    }catch(Exception $e){
-        print_r("<br>");
-        print_r("<br>");
-	        print_r($e);
+        // print_r("<br>");
+        // print_r("<br>");
+	    //     print_r($e);
 			$alerts = GenerateDataAlert('failed',$e->getMessage());
 		}
+		$this->session->set_flashdata('alerts', $alerts);
+		return redirect('checklist', 'GET');
 		
 	}
 	public function add_laporan(){
@@ -281,15 +313,14 @@ class Checklist extends CI_Controller {
         !$from ?: $where['a.date >= '] = date_format(date_create_from_format('d/m/Y', $from), 'Ymd');
         !$to ?: $where['a.date <= '] = date_format(date_create_from_format('d/m/Y', $to), 'Ymd');
 
-		$order_text = ['a.date DESC, a.kode ASC', 'a.date ASC, a.kode ASC'];
+		$order_text = ['a.date DESC, a.sarfas ASC', 'a.date ASC, a.sarfas ASC'];
 
 	    
 	    
-        $select = 'day, date, time, sarfas, group, b.type, b.kode';
+        $select = 'id_checklist_value AS id, day, date, time, sarfas, group, b.type, b.kode';
 	    $table = 'checklist_value AS a';
         
         $order = $order_text[$urutkan - 1];
-        $order = null;
         $group = null;
 		$join = [
             ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left'],	
@@ -301,6 +332,25 @@ class Checklist extends CI_Controller {
         $laporan['data'] = $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
         $laporan['total'] = $this->DataModel->GetTotalDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
         return $laporan;
+	}
+    
+	private function GetDetailChecklistData($id){
+
+		$where = "id_checklist_value = '$id'";
+		$select = '*';
+		$table = 'checklist_value AS a';
+		$order = null;	
+		$group = null;
+		$join = [
+            ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left'],	
+        ];
+		$like = null;
+		
+        return $this->DataModel->GetDataGroup($select, $table, $where, $like, $order, $group, $join);
+		// $laporan['data'] = $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
+		// $laporan['total'] = $this->DataModel->GetTotalDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
+		// return $laporan;
+	    // return $this->DataModel->GetDataJoin($select,$table,$table2,$join_param);  
 	}
 	// private function GetAllLaporanData($per_page,$keyword,$nip){
 	    

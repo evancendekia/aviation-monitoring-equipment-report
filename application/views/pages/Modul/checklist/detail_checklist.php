@@ -1,5 +1,10 @@
 <?php $this->load->view('components/alert');?>
 <div class="row">
+    <div class="col-1 mb-2">
+        <button type="button" class="btn btn-block btn-sm btn-secondary font-weight-bold p-0" onclick="(window.location = '<?php echo base_url('checklist');?>')"><i class="fa fa-caret-left  "></i> Back</button>
+    </div>
+</div>
+<div class="row">
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
@@ -27,7 +32,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text f-12">Day</span>
                                 </div>
-                                <input type="text" class="form-control f-12" value="<?php echo date("l")?>" disabled>
+                                <input type="text" class="form-control f-12" value="<?php echo date('l', strtotime($checklist[0]['date']));?>" disabled>
                             </div>
                         </div>
                         <div class="form-group m-form__group">
@@ -35,7 +40,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text f-12">Date</span>
                                 </div>
-                                <input type="text" class="form-control f-12" value="<?php echo date("d F Y")?>" disabled>
+                                <input type="text" class="form-control f-12" value="<?php echo date("d F Y", strtotime($checklist[0]['date']));?>" disabled>
                             </div>
                         </div>
                     </div>
@@ -45,14 +50,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text f-12">Sarfas</span>
                                 </div>
-                                <select class="form-control f-12" name="equipment">
-                                    <!-- <option value="0" <?php echo set_select('equipment', 0, $this->input->get('equipment') == 0 ? TRUE : FALSE); ?>>Semua Equipment</option> -->
-                                    <?php foreach($sarfas as $s){?>
-                                    <option value="<?php echo $s['id_filter'];?>" <?php echo set_select('equipment', $s['id_filter'], $this->input->get('equipment') == $s['kode'] ? TRUE : FALSE); ?>><?php echo $s['kode']." - ".$s['type'];?></option>
-                                    <?php }?>
-                                </select>
-                                <!-- <input type="text" id="sarfas" name="sarfas" value="" class="form-control f-12" onclick="ChooseSarfas()" required>
-                                <input type="hidden" id="sarfas_value" name="sarfas_value" value="" class="form-control f-12"> -->
+                                
+                                <input type="text" id="sarfas" name="sarfas" value="<?php echo $checklist[0]['kode']." - ".$checklist[0]['type'];?>" class="form-control f-12" disabled>
                             </div>
                         </div>
                         <div class="form-group m-form__group">
@@ -60,7 +59,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text f-12">Group</span>
                                 </div>
-                                <input type="text" name="group" class="form-control f-12" value="A">
+                                <input type="text" name="group" class="form-control f-12" value="<?php echo $checklist[0]['group'];?>" disabled>
                             </div>
                         </div>
                     </div>
@@ -160,27 +159,14 @@
                                             </tr>
                                             <?php for($i=0; $i<count($truck_conditions);$i++){?>
                                                 <tr>
-                                                        <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
-                                                        <td class="align-middle col-4"><?php echo $truck_conditions[$i];?></td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'S_'.$truck_conditions_code[$i];?>" name="<?php echo 'S_'.$truck_conditions_code[$i];?>" onclick="CheckingSwitch('<?php echo$truck_conditions_code[$i];?>','S')">
-                                                                    <span class="switchS-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'C_'.$truck_conditions_code[$i];?>" name="<?php echo 'C_'.$truck_conditions_code[$i];?>" onclick="CheckingSwitch('<?php echo$truck_conditions_code[$i];?>','C')">
-                                                                    <span class="switchC-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle col-5">
-                                                            <input type="text" id="<?php echo $truck_conditions_code[$i];?>" name="<?php echo 'Remarks_'. $truck_conditions_code[$i];?>" value="" class="form-control f-12">
-                                                        </td>
+                                                    <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
+                                                    <td class="align-middle col-4"><?php echo $truck_conditions[$i];?></td>
+                                                    <td class="align-middle col-2 text-center" colspan="2">
+                                                        <?php echo unserialize($checklist[0][$truck_conditions_code[$i]])['check'];?>
+                                                    </td>
+                                                    <td class="align-middle col-5">
+                                                        <?php echo unserialize($checklist[0][$truck_conditions_code[$i]])['Remarks'];?>
+                                                    </td>
                                                 </tr>
                                             <?php }?>
                                         </tbody>
@@ -208,27 +194,14 @@
                                             </tr>
                                             <?php for($i=0; $i<count($tank_condition);$i++){?>
                                                 <tr>
-                                                        <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
-                                                        <td class="align-middle col-4"><?php echo $tank_condition[$i];?></td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'S_'.$tank_condition_code[$i];?>" name="<?php echo 'S_'.$tank_condition_code[$i];?>" onclick="CheckingSwitch('<?php echo $tank_condition_code[$i];?>','S')">
-                                                                    <span class="switchS-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'C_'.$tank_condition_code[$i];?>" name="<?php echo 'C_'.$tank_condition_code[$i];?>" onclick="CheckingSwitch('<?php echo $tank_condition_code[$i];?>','C')">
-                                                                    <span class="switchC-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle col-5">
-                                                            <input type="text" id="<?php echo $tank_condition_code[$i];?>" name="<?php echo 'Remarks_'. $tank_condition_code[$i];?>" value="" class="form-control f-12">
-                                                        </td>
+                                                    <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
+                                                    <td class="align-middle col-4"><?php echo $tank_condition[$i];?></td>
+                                                    <td class="align-middle col-2 text-center" colspan="2">
+                                                        <?php echo unserialize($checklist[0][$tank_condition_code[$i]])['check'];?>
+                                                    </td>
+                                                    <td class="align-middle col-5">
+                                                        <?php echo unserialize($checklist[0][$tank_condition_code[$i]])['Remarks'];?>
+                                                    </td>
                                                 </tr>
                                             <?php }?>
                                         </tbody>
@@ -256,27 +229,14 @@
                                             </tr>
                                             <?php for($i=0; $i<count($safety_equipment);$i++){?>
                                                 <tr>
-                                                        <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
-                                                        <td class="align-middle col-4"><?php echo $safety_equipment[$i];?></td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'S_'.$safety_equipment_code[$i];?>" name="<?php echo 'S_'.$safety_equipment_code[$i];?>" onclick="CheckingSwitch('<?php echo $safety_equipment_code[$i];?>','S')">
-                                                                    <span class="switchS-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'C_'.$safety_equipment_code[$i];?>" name="<?php echo 'C_'.$safety_equipment_code[$i];?>" onclick="CheckingSwitch('<?php echo $safety_equipment_code[$i];?>','C')">
-                                                                    <span class="switchC-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle col-5">
-                                                            <input type="text" id="<?php echo $safety_equipment_code[$i];?>" name="<?php echo 'Remarks_'. $safety_equipment_code[$i];?>" value="" class="form-control f-12">
-                                                        </td>
+                                                    <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
+                                                    <td class="align-middle col-4"><?php echo $safety_equipment[$i];?></td>
+                                                    <td class="align-middle col-2 text-center" colspan="2">
+                                                        <?php echo unserialize($checklist[0][$safety_equipment_code[$i]])['check'];?>
+                                                    </td>
+                                                    <td class="align-middle col-5">
+                                                        <?php echo unserialize($checklist[0][$safety_equipment_code[$i]])['Remarks'];?>
+                                                    </td>
                                                 </tr>
                                             <?php }?>
                                         </tbody>
@@ -310,24 +270,11 @@
                                                     <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
                                                     <td class="align-middle col-4"><?php echo $refueling_equipment_before[$i];?></td>
                                                     <?php if($i >= 3){?>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'S_'.$refueling_equipment_before_code[$i];?>" name="<?php echo 'S_'.$refueling_equipment_before_code[$i];?>" onclick="CheckingSwitch('<?php echo $refueling_equipment_before_code[$i];?>','S')">
-                                                                    <span class="switchS-state"></span>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                            <div class="media-body text-left icon-state">
-                                                                <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                    <input type="checkbox" value="1" id="<?php echo 'C_'.$refueling_equipment_before_code[$i];?>" name="<?php echo 'C_'.$refueling_equipment_before_code[$i];?>" onclick="CheckingSwitch('<?php echo $refueling_equipment_before_code[$i];?>','C')">
-                                                                    <span class="switchC-state"></span>
-                                                                </label>
-                                                            </div>
+                                                        <td class="align-middle col-2 text-center" colspan="2">
+                                                            <?php echo unserialize($checklist[0][$refueling_equipment_before_code[$i]])['check'];?>
                                                         </td>
                                                         <td class="align-middle col-5">
-                                                            <input type="text" id="<?php echo $refueling_equipment_before_code[$i];?>" name="<?php echo 'Remarks_'.$refueling_equipment_before_code[$i];?>" value="" class="form-control f-12">
+                                                            <?php echo unserialize($checklist[0][$refueling_equipment_before_code[$i]])['Remarks'];?>
                                                         </td>
                                                     <?php }else{?>
                                                     <td class="align-middle text-center col-1" colspan="3"></td>
@@ -339,24 +286,11 @@
                                                         <tr>
                                                             <td class="align-middle text-center col-1"></td>
                                                             <td class="align-middle col-4" style="padding-left: 4em;"><?php echo $sub_re["re_$i"][$j];?></td>
-                                                            <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                                <div class="media-body text-left icon-state">
-                                                                    <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                        <input type="checkbox" value="1" id="<?php echo 'S_'.$sub_re_code["re_$i"][$j];?>" name="<?php echo 'S_'.$sub_re_code["re_$i"][$j];?>" onclick="CheckingSwitch('<?php echo $sub_re_code["re_$i"][$j];?>','S')">
-                                                                        <span class="switchS-state"></span>
-                                                                    </label>
-                                                                </div>
-                                                            </td>
-                                                            <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                                <div class="media-body text-left icon-state">
-                                                                    <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                        <input type="checkbox" value="1" id="<?php echo 'C_'.$sub_re_code["re_$i"][$j];?>" name="<?php echo 'C_'.$sub_re_code["re_$i"][$j];?>" onclick="CheckingSwitch('<?php echo $sub_re_code["re_$i"][$j];?>','C')">
-                                                                        <span class="switchC-state"></span>
-                                                                    </label>
-                                                                </div>
+                                                            <td class="align-middle col-2 text-center" colspan="2">
+                                                                <?php echo unserialize($checklist[0][$sub_re_code["re_$i"][$j]])['check'];?>
                                                             </td>
                                                             <td class="align-middle col-5">
-                                                                <input type="text" id="<?php echo $sub_re_code["re_$i"][$j];?>" name="<?php echo 'Remarks_'.$sub_re_code["re_$i"][$j];?>" value="" class="form-control f-12">
+                                                                <?php echo unserialize($checklist[0][$sub_re_code["re_$i"][$j]])['Remarks'];?>
                                                             </td>
                                                         </tr>
                                                 
@@ -372,24 +306,11 @@
                                                 <tr>
                                                     <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
                                                     <td class="align-middle col-4"><?php echo $refueling_equipment_during[$i];?></td>
-                                                    <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                        <div class="media-body text-left icon-state">
-                                                            <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                <input type="checkbox" value="1" id="<?php echo 'S_'.$refueling_equipment_during_code[$i];?>" name="<?php echo 'S_'.$refueling_equipment_during_code[$i];?>" onclick="CheckingSwitch('<?php echo $refueling_equipment_during_code[$i];?>','S')">
-                                                                <span class="switchS-state"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                        <div class="media-body text-left icon-state">
-                                                            <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                <input type="checkbox" value="1" id="<?php echo 'C_'.$refueling_equipment_during_code[$i];?>" name="<?php echo 'C_'.$refueling_equipment_during_code[$i];?>" onclick="CheckingSwitch('<?php echo $refueling_equipment_during_code[$i];?>','C')">
-                                                                <span class="switchC-state"></span>
-                                                            </label>
-                                                        </div>
+                                                    <td class="align-middle col-2 text-center" colspan="2">
+                                                        <?php echo unserialize($checklist[0][$refueling_equipment_during_code[$i]])['check'];?>
                                                     </td>
                                                     <td class="align-middle col-5">
-                                                        <input type="text" id="<?php echo $refueling_equipment_during_code[$i];?>" name="<?php echo 'Remarks_'.$refueling_equipment_during_code[$i];?>" value="" class="form-control f-12">
+                                                        <?php echo unserialize($checklist[0][$refueling_equipment_during_code[$i]])['Remarks'];?>
                                                     </td>
                                                 </tr>
                                             <?php }?>
@@ -420,24 +341,11 @@
                                                 <tr>
                                                     <td class="align-middle text-center col-1"><?php echo $i+1;?></td>
                                                     <td class="align-middle col-4"><?php echo $others[$i];?></td>
-                                                    <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                        <div class="media-body text-left icon-state">
-                                                            <label class="switchS" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                <input type="checkbox" value="1" id="<?php echo 'S_'.$others_code[$i];?>" name="<?php echo 'S_'.$others_code[$i];?>" onclick="CheckingSwitch('<?php echo $others_code[$i];?>','S')">
-                                                                <span class="switchS-state"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="align-middle text-center col-1" style="padding:0.3rem; padding-top: 0.6rem">
-                                                        <div class="media-body text-left icon-state">
-                                                            <label class="switchC" style="display: block; margin-left: auto; margin-right: auto;">
-                                                                <input type="checkbox" value="1" id="<?php echo 'C_'.$others_code[$i];?>" name="<?php echo 'C_'.$others_code[$i];?>" onclick="CheckingSwitch('<?php echo $others_code[$i];?>','C')">
-                                                                <span class="switchC-state"></span>
-                                                            </label>
-                                                        </div>
+                                                    <td class="align-middle col-2 text-center" colspan="2">
+                                                        <?php echo unserialize($checklist[0][$others_code[$i]])['check'];?>
                                                     </td>
                                                     <td class="align-middle col-5">
-                                                        <input type="text" id="<?php echo $others_code[$i];?>" name="<?php echo 'Remarks_'.$others_code[$i];?>" value="" class="form-control f-12">
+                                                        <?php echo unserialize($checklist[0][$others_code[$i]])['Remarks'];?>
                                                     </td>
                                                 </tr>
                                             <?php }?>
@@ -446,9 +354,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 mt-3"> 
-                        <button type="submit" class="btn btn-secondary btn-block">Submit</button>
                     </div>
                 </div>
               </form>

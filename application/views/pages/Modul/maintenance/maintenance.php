@@ -7,7 +7,7 @@
                 <div class="float-right card-header-right">
                     <div class="btn-group">
                         <div class="px-2">
-                            <button class="btn btn-primary mb-3 mx-2" onclick="printPDF()"><i class="fa fa-download text-white"></i>Download Laporan</button>
+                            <button class="btn btn-success mb-3 mx-2" onclick="printPDF()"><i class="fa fa-download text-white"></i>Download Laporan</button>
                         </div>  
                          <?php if($role == 1){?>
                             <div class="px-2">

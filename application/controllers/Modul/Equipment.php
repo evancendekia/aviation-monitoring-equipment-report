@@ -18,6 +18,7 @@ class Equipment extends CI_Controller {
 // 		$data['js'] = 'js_request_anggaran';
 		$data['alerts'] = $this->session->flashdata('alerts');
 		$data['role'] = $role = $this->session->userdata('role');
+		$data['page_num'] = $this->input->get('page') ? $this->input->get('page') : 1;
 		$data['filter'] = $this->GetAllFilterData(10,null,null);
 		// $data['sarfas'] = $this->GetAllSarfasData(10,null,null);
 		// print_r($data['filter']);
