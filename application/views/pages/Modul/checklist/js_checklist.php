@@ -111,12 +111,6 @@
                 bolditalics: '<?php echo base_url(); ?>/assets/universal/assets/fonts/arial/arialbi.ttf'
             }
         };
-        
-        var truck_conditions = [
-                    'Fuel','Radiator Condition / Water','Lubricant','Batery Condition','Brake',
-                    'General Conditions of Engine','Horn','Wiper','Head & Tail Lamps Conditions','Sign Lamps',
-                    'Beacon Light','Fueling Lamps','PTO / Hydraulic Pump','Compressor','Mirrors',
-                    'Tires','General Conditons of Transmission','Hydraulic Ladder / Platform','Rearward Gear Warning'];
 
         const docDefinition = {
             
@@ -264,7 +258,7 @@
                                     <?php }?>
                                     
                                     ,[   
-                                        {text: 'VI', style:"sub_header", alignment: 'center'}, 
+                                        {text: '', style:"sub_header", alignment: 'center'}, 
                                         {text: 'During Refueling', style:"sub_header"}, 
                                         {text: '', style:"sub_header", alignment: 'center'}, 
                                         {text: '', style:"sub_header"}
@@ -275,6 +269,21 @@
                                             {text: '<?php echo $refueling_equipment_during[$i];?>', style:"content"}, 
                                             {text: '<?php echo unserialize($checklist[0][$refueling_equipment_during_code[$i]])['check'];?>', style:"content", alignment: 'center'}, 
                                             {text: '<?php echo unserialize($checklist[0][$refueling_equipment_during_code[$i]])['Remarks'];?>', style:"content"}
+                                        ]
+                                    <?php }?>
+                                    ,
+                                    [   
+                                        {text: 'VI', style:"sub_header", alignment: 'center'}, 
+                                        {text: 'Other', style:"sub_header"}, 
+                                        {text: '', style:"sub_header", alignment: 'center'}, 
+                                        {text: '', style:"sub_header"}
+                                    ]
+                                    <?php for($i=0; $i<count($others);$i++){?>
+                                        ,[   
+                                            {text: '<?php echo $i+1;?>', style:"content", alignment: 'center'}, 
+                                            {text: '<?php echo $others[$i];?>', style:"content"}, 
+                                            {text: '<?php echo unserialize($checklist[0][$others_code[$i]])['check'];?>', style:"content", alignment: 'center'}, 
+                                            {text: '<?php echo unserialize($checklist[0][$others_code[$i]])['Remarks'];?>', style:"content"}
                                         ]
                                     <?php }?>
                                     ,[   
@@ -293,21 +302,21 @@
             ],
             styles: {
                 title: {
-                    fontSize: 10,
+                    fontSize: 9,
                     bold: true,
                     alignment: 'Left',
-                    margin: [35, 25, 0, 0]
+                    margin: [35, 20, 0, 0]
                 },
                 sub_header: {
-                    fontSize: 6.5,
+                    fontSize: 6,
                     bold: true,
                     border: [true, true, true, true],
                     margin: [5, 0, 5, 0]
                 },
                 content: {
-                    fontSize: 6.5,
+                    fontSize: 6,
                     border: [true, true, true, true],
-                    margin: [5, 0, 5, 0]
+                    margin: [5, -1, 5, -1]
                 },
                 label_sub: {
                     bold: true,
@@ -344,11 +353,13 @@
         });
 
         Promise.all(fetches).then(() => {
-            var win = window.open('', '_blank');
-            pdfMake.createPdf(docDefinition).open({}, win);
+            // var win = window.open('', '_blank');
+            // pdfMake.createPdf(docDefinition).open({}, win);
             // pdfMake.createPdf(docDefinition).open({}, window)
             
             // pdfMake.createPdf(docDefinition).open();
+            pdfMake.createPdf(docDefinition).download('HYDRANT DISPENSER/REFUELLER CHECKLIST - <?php echo $checklist[0]['kode'];?> <?php echo date("d F Y", strtotime($checklist[0]['date']));?>.pdf');
+            
         });
 
 //        pdfMake.createPdf(docDefinition).open();

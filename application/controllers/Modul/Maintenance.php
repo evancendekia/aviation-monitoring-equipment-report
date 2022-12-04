@@ -20,7 +20,7 @@ class Maintenance extends CI_Controller {
 		$data['role'] = $role = $this->session->userdata('role');
 		$data['laporan'] = $this->GetAllLaporanData(10,null,null);
 		$data['laporan_all'] = $this->GetAllLaporanDataAll();
-		$data['sarfas'] = $this->GetAllSarfasData(10,null,null);
+		$data['sarfas'] = $this->GetAllSarfasData();
 		$this->load->view('layout/layout',$data);
         // print_r($data['laporan']);
         // print_r($data['laporan_all']);
@@ -58,7 +58,7 @@ class Maintenance extends CI_Controller {
 	public function proses_laporan(){
         $id = $this->input->post('id');
 		$data['tgl_proses'] = date('Y-m-d');
-        $data['type'] = $this->input->post('type');
+        $data['laporan_type'] = $this->input->post('type');
         $data['processor'] = $this->session->userdata('username');
         $data['status_laporan'] = 'Dalam proses';
         try{
@@ -159,15 +159,24 @@ class Maintenance extends CI_Controller {
 		}
 		return true;
 	}
-	private function GetAllSarfasData($per_page,$keyword,$nip){
+	// private function GetAllSarfasData($per_page,$keyword,$nip){
+	// 	$select = '*';
+	//     $table = 'sarfas AS a';
+	// 	$table2 = 'jenis';
+	// 	$join_param = 'id_jenis';
+	//     $col = null;
+	//     $par = null;
+	// 	$order = null;
+	//     return $this->DataModel->GetDataJoin($select,$table,$table2,$join_param,$col,$par,$order);  
+	// }
+	
+	private function GetAllSarfasData(){
 		$select = '*';
-	    $table = 'sarfas AS a';
-		$table2 = 'jenis';
-		$join_param = 'id_jenis';
-	    $col = null;
-	    $par = null;
-		$order = null;
-	    return $this->DataModel->GetDataJoin($select,$table,$table2,$join_param,$col,$par,$order);  
+		$table = 'filter';
+		$col = array();
+		$par = array();
+		$order = 'kode ASC';
+		return $this->DataModel->GetData($select,$table,$col,$par,$order);
 	}
 	private function GetAllLaporanData($per_page,$keyword,$nip){
 	    
@@ -194,8 +203,8 @@ class Maintenance extends CI_Controller {
         $order = $order_text[$urutkan - 1];
         $group = null;
 		$join = [
-            ['table' => 'sarfas AS b', 'condition' => 'a.sarfas=b.id_sarfas', 'type' => 'left'],	
-            ['table' => 'jenis AS c', 'condition' => 'b.id_jenis=c.id_jenis', 'type' => 'left']
+            // ['table' => 'sarfas AS b', 'condition' => 'a.sarfas=b.id_sarfas', 'type' => 'left'],	
+            ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left']
         ];
         $url = 'maintenance';
         $like = '';
@@ -230,8 +239,7 @@ class Maintenance extends CI_Controller {
 	    $order = $order_text[$urutkan - 1];
         $group = null;
 		$join = [
-            ['table' => 'sarfas AS b', 'condition' => 'a.sarfas=b.id_sarfas', 'type' => 'left'],	
-            ['table' => 'jenis AS c', 'condition' => 'b.id_jenis=c.id_jenis', 'type' => 'left']
+            ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left']
         ];
         
         

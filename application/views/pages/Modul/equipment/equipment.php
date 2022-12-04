@@ -3,7 +3,7 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Data Equipment</h5>
+                <h5>Data Sarfas</h5>
                 <div class="float-right card-header-right">
                     <!-- <?php if($role == 1){?>
                         <div class="btn-group">

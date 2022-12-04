@@ -129,13 +129,13 @@
                                             borderColor: ['grey', 'grey', 'grey', 'grey'],
                                         },
                                         {
-                                            text: '<?php echo $l['jenis'].' - '.$l['merk'].' - '.$l['kapasitas'].' - '.$l['tahun_perolehan']; ?>',
+                                            text: '<?php echo $l['kode'].' - '.$l['type'];?>',
                                             style: 'table_content',
                                             border: <?php echo $borderMid; ?>,
                                             borderColor: ['grey', 'grey', 'grey', 'grey'],
                                         },
                                         {
-                                            text: '<?php echo $l['laporan_kerusakan']; ?>',
+                                            text: "<?php echo preg_replace("/\n/m", '\n', $l['laporan_kerusakan']); ?>",
                                             style: 'table_content',
                                             border: <?php echo $borderMid; ?>,
                                             borderColor: ['grey', 'grey', 'grey', 'grey'],

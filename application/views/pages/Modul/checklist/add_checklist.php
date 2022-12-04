@@ -186,8 +186,19 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <!-- <div class="col-sm-12 mt-3"> 
+                                    <div class="nav" id="top-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link btn btn-secondary btn-block" id="profile-top-tab" data-toggle="tab" href="#III" role="tab" aria-controls="top-profile">III</a>
+                                            <div class="material-border"></div>
+                                        </li>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary btn-block">Submit</button>
+                                </div> -->
+                                
+                        
                             </div>
-                            <div class="tab-pane fade" id="III" role="tabpanel" aria-labelledby="profile-top-tab">
+                            <div class="tab-pane fade" id="III" role="tabpanel" aria-labelledby="profile-bottom-tab">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped align-items-center mb-0">
                                         <thead>
@@ -444,12 +455,37 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-sm-12 mt-3"> 
+                                    <button type="submit" class="btn btn-secondary btn-block">Submit</button>
+                                </div>
                             </div>
                         </div>
+                        <!-- <ul class="nav nav-tabs border-tab mb-0" id="top-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="top-home-tab" data-toggle="tab" href="#I_II" role="tab" aria-controls="top-home" aria-selected="false">I & II</a>
+                                <div class="material-border"></div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-top-tab" data-toggle="tab" href="#III" role="tab" aria-controls="top-profile" aria-selected="false">III</a>
+                                <div class="material-border"></div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-top-tab" data-toggle="tab" href="#IV" role="tab" aria-controls="top-contact" aria-selected="true">IV</a>
+                                <div class="material-border"></div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="brand-top-tab" data-toggle="tab" href="#V" role="tab" aria-controls="top-brand" aria-selected="true">V</a>
+                                <div class="material-border"></div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="brand-top-tab" data-toggle="tab" href="#VI" role="tab" aria-controls="top-brand" aria-selected="true">VI</a>
+                                <div class="material-border"></div>
+                            </li>
+                        </ul> -->
                     </div>
-                    <div class="col-sm-12 mt-3"> 
+                    <!-- <div class="col-sm-12 mt-3"> 
                         <button type="submit" class="btn btn-secondary btn-block">Submit</button>
-                    </div>
+                    </div> -->
                 </div>
               </form>
             </div>

@@ -18,7 +18,7 @@
         <!-- default script -->
         
         <?php 
-            if($data != null){
+            if(isset($data)){
                 $this->load->view('layout/script',$data); 
             }else{
                 $this->load->view('layout/script'); 

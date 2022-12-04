@@ -10,7 +10,7 @@
                             <ol class="breadcrumb pull-right">
                                 <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i></a></li>
                                 <li class="breadcrumb-item text-uppercase"><?php echo $menu;?></li>
-                                <li class="breadcrumb-item active text-uppercase"><?php echo str_replace("_"," ",$page);?></li>
+                                <li class="breadcrumb-item active text-uppercase"><?php echo str_replace("_"," ",($page == 'equipment' ? 'sarfas' : $page));?></li>
                             </ol>
                         </div>
                     </div>

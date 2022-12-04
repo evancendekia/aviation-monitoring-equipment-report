@@ -1,7 +1,7 @@
 <script>
     function ShowDetailLaporan(laporan,role){
         document.getElementById('no_laporan').value = laporan.no_laporan;
-        document.getElementById('sarfas').value = laporan.jenis+' - '+laporan.merk+' - '+laporan.kapasitas+' - '+laporan.tahun_perolehan;
+        document.getElementById('sarfas').value = laporan.kode+' - '+laporan.type;
         document.getElementById('tgl').value = laporan.tgl;
         document.getElementById('author').value = laporan.author;
         document.getElementById('laporan_kerusakan').value = laporan.laporan_kerusakan;
@@ -15,7 +15,7 @@
         document.getElementById("lampiran_1").src= '<?php echo base_url();?>/upload/file/maintenance/'+laporan.lampiran_1;
         document.getElementById("lampiran_2").src= '<?php echo base_url();?>/upload/file/maintenance/'+laporan.lampiran_2;
         
-        document.getElementById('jenis_perbaikan').value = laporan.type;
+        document.getElementById('jenis_perbaikan').value = laporan.laporan_type;
         document.getElementById('processor').value = laporan.processor;
         document.getElementById('tgl_proses').value = laporan.tgl_proses;
         document.getElementById('tgl_selesai').value = laporan.tgl_selesai;

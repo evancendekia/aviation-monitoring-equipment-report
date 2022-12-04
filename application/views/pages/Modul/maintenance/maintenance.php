@@ -145,8 +145,16 @@
                                     <td class="align-middle text-center"><?php echo $no;?></td>
                                     <td class="align-middle text-center"><?php echo $l['no_laporan'];?> </td>
                                     <td class="align-middle text-center"><?php echo date_format(date_create($l['tgl']),"d M Y");?></td>
-                                    <td class="align-middle text-center" style="width:20%"><?php echo $l['jenis'].' - '.$l['merk'].' - '.$l['kapasitas'].' - '.$l['tahun_perolehan'];?></td>
-                                    <td class="align-middle" style="width:20%"><?php echo $l['laporan_kerusakan'];?></td>
+                                    <td class="align-middle text-center" style="width:20%"><?php echo $l['kode'].' - '.$l['type'];?></td>
+                                    <td class="align-middle" style="width:20%">
+                                        <?php 
+                                            if(strlen($l['laporan_kerusakan']) > 30){
+                                                echo substr($l['laporan_kerusakan'],0,30)."...";  
+                                            }else{
+                                                echo $l['laporan_kerusakan'];
+                                            };
+                                        ?>
+                                    </td>
                                     <td class="align-middle text-center">
                                         <span class="badge badge-<?php echo color_switcher2($l['priority']);?> f-12">
                                             <?php echo $l['priority'];?>
@@ -154,7 +162,7 @@
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="badge badge-<?php echo color_switcher($l['status_laporan']);?> f-12">
-                                            <?php echo $l['status_laporan']; if($l['status_laporan'] == 'Dalam proses'){ echo ' ('.$l['type'].')';}?>
+                                            <?php echo $l['status_laporan']; if($l['status_laporan'] == 'Dalam proses'){ echo ' ('.$l['laporan_type'].')';}?>
                                         </span>
                                     </td>
                                     <td class="align-middle text-center">

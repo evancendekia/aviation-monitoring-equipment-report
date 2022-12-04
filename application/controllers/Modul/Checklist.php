@@ -58,220 +58,185 @@ class Checklist extends CI_Controller {
 	}
 	public function add(){
 	    try{
-	    $day =date("l");
-	    $date =date("Ymd");
-	    $time = date("H:i");
-	    $sarfas = $this->input->post('equipment');
-	    $group = $this->input->post('group');
-        $truck_conditions_code = array(
-            'II_1','II_2','II_3','II_4','II_5',
-            'II_6','II_7','II_8','II_9','II_10',
-            'II_11','II_12','II_13','II_14','II_15',
-            'II_16','II_17','II_18','II_19');
-        $tank_condition_code = array(
-            'III_1','III_2','III_3','III_4');
-        $safety_equipment_code = array(
-            'IV_1','IV_2','IV_3','IV_4','IV_5',
-            'IV_6','IV_7');
-        $refueling_equipment_before_code = array(
-            '','','','V_B_4','V_B_5',
-            'V_B_6','V_B_7','V_B_8');
-        $sub_re_code = array(
-            're_0' => array('V_B_1_1','V_B_1_2'),
-            're_1' => array('V_B_2_1','V_B_2_2'),
-            're_2' => array('V_B_3_1','V_B_3_2')
-        );
-        $refueling_equipment_during_code = array(
-            'V_D_1','V_D_2','V_D_3','V_D_4');
-        $others_code = array(
-                    'VI_1','VI_2','VI_3','VI_4');
-        for($i=0;$i<count($truck_conditions_code);$i++){
-            $data[$truck_conditions_code[$i]]['check'] = $this->input->post('S_'.$truck_conditions_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$truck_conditions_code[$i]) == 1  ? 'C' : '');
-            $data[$truck_conditions_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$truck_conditions_code[$i]);
-            $data[$truck_conditions_code[$i]] = serialize($data[$truck_conditions_code[$i]]);
-        };
-        for($i=0;$i<count($tank_condition_code);$i++){
-            $data[$tank_condition_code[$i]]['check'] = $this->input->post('S_'.$tank_condition_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$tank_condition_code[$i]) == 1  ? 'C' : '');
-            $data[$tank_condition_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$tank_condition_code[$i]);
-            $data[$tank_condition_code[$i]] = serialize($data[$tank_condition_code[$i]]);
-        };
-        for($i=0;$i<count($safety_equipment_code);$i++){
-            $data[$safety_equipment_code[$i]]['check'] = $this->input->post('S_'.$safety_equipment_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$safety_equipment_code[$i]) == 1  ? 'C' : '');
-            $data[$safety_equipment_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$safety_equipment_code[$i]);
-            $data[$safety_equipment_code[$i]] = serialize($data[$safety_equipment_code[$i]]);
-        };
-        for($i=0;$i<count($refueling_equipment_before_code);$i++){
-            if($i <3){
-                for($j=0; $j<count($sub_re_code["re_$i"]);$j++){
-                    
-                $data[$sub_re_code["re_$i"][$j]]['check'] = $this->input->post('S_'.$sub_re_code["re_$i"][$j]) == 1 ? 'S' : ($this->input->post('C_'.$sub_re_code["re_$i"][$j]) == 1  ? 'C' : '');
-                $data[$sub_re_code["re_$i"][$j]]['Remarks'] = $this->input->post('Remarks_'.$sub_re_code["re_$i"][$j]);
-                $data[$sub_re_code["re_$i"][$j]] = serialize($data[$sub_re_code["re_$i"][$j]]);
-                }
-                
-            }else{
-                $data[$refueling_equipment_before_code[$i]]['check'] = $this->input->post('S_'.$refueling_equipment_before_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$refueling_equipment_before_code[$i]) == 1  ? 'C' : '');
-                $data[$refueling_equipment_before_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$refueling_equipment_before_code[$i]);
-                $data[$refueling_equipment_before_code[$i]] = serialize($data[$refueling_equipment_before_code[$i]]);
-            }
-        };
-        for($i=0;$i<count($refueling_equipment_during_code);$i++){
-            $data[$refueling_equipment_during_code[$i]]['check'] = $this->input->post('S_'.$refueling_equipment_during_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$refueling_equipment_during_code[$i]) == 1  ? 'C' : '');
-            $data[$refueling_equipment_during_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$refueling_equipment_during_code[$i]);
-            $data[$refueling_equipment_during_code[$i]] = serialize($data[$refueling_equipment_during_code[$i]]);
-        };
-        for($i=0;$i<count($others_code);$i++){
-            $data[$others_code[$i]]['check'] = $this->input->post('S_'.$others_code[$i]) == 1 ? 'S' : ($this->input->post('C_'.$others_code[$i]) == 1  ? 'C' : '');
-            $data[$others_code[$i]]['Remarks'] = $this->input->post('Remarks_'.$others_code[$i]);
-            $data[$others_code[$i]] = serialize($data[$others_code[$i]]);
-        };
+			$has_c = false;
+			$data_kerusakan = array();
+			$day =date("l");
+			$date =date("Ymd");
+			$time = date("H:i");
+			$sarfas = $this->input->post('equipment');
+			$group = $this->input->post('group');
+			
+			$truck_conditions = array(
+				'Fuel','Radiator Condition / Water','Lubricant','Batery Condition','Brake',
+				'General Conditions of Engine','Horn','Wiper','Head & Tail Lamps Conditions','Sign Lamps',
+				'Beacon Light','Fueling Lamps','PTO / Hydraulic Pump','Compressor','Mirrors',
+				'Tires','General Conditons of Transmission','Hydraulic Ladder / Platform','Rearward Gear Warning');
+			$truck_conditions_code = array(
+				'II_1','II_2','II_3','II_4','II_5',
+				'II_6','II_7','II_8','II_9','II_10',
+				'II_11','II_12','II_13','II_14','II_15',
+				'II_16','II_17','II_18','II_19');
+			
+			$tank_condition = array(
+				'Step Condition','Jet Level Sensor Condition','Pressure Vacum Valve / Free Vent','Water Drain Line Tank (roof area water drain)');     
+			$tank_condition_code = array(
+				'III_1','III_2','III_3','III_4');
 
-        // print_r($input);
-        // foreach(array_keys($data) as $key){
-        //     print_r($key);
-        //     print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-        //     print_r($data[$key]);
-        //     print_r("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-        //     print_r(unserialize($data[$key]));
-        //     print_r("<br>");
-        // }
-        
-	    $data['day'] = $day;
-	    $data['date'] = $date;
-	    $data['time'] = $time;
-	    $data['sarfas'] = $sarfas;
-	    $data['group'] = $group;
-        // print_r("<br>");
-        // print_r($data);
-        // print_r("<br>");
-        $this->InsertData($data,'checklist_value');
-		$alerts = GenerateDataAlert('success','Berhasil menambahkan lapora n');
-        // print_r($insert);
+			$safety_equipment = array(
+				'Flame Trap Condition','Grounding and Bounding Cable','Interlock System','Seal Overide Interlock System','Fire Extinguishers (seal, number & date of last check',
+				'"Product","NO SMOKING" signs (placards)','Safety Cone & Lanyard');
+			$safety_equipment_code = array(
+				'IV_1','IV_2','IV_3','IV_4','IV_5',
+				'IV_6','IV_7');
+
+			$refueling_equipment_before = array(
+				'Underwing Hoses Condition','Platform Hoses','Condition of Flow Meter','Deadman Control Condition','Input Coupler Condition',
+				'Date of Last Filter Change','PCV & Regulator','Nitrogen Preasure Indicator');
+			$refueling_equipment_before_code = array(
+				'','','','V_B_4','V_B_5',
+				'V_B_6','V_B_7','V_B_8');
+			
+			$sub_re = array(
+				're_0' => array('Rear Hoses & Reel Conditions','Front Hoses & Reel Conditions'),
+				're_1' => array('Left','Right'),
+				're_2' => array('Sealing', 'Calibration exp. Date'),
+			);
+			$sub_re_code = array(
+				're_0' => array('V_B_1_1','V_B_1_2'),
+				're_1' => array('V_B_2_1','V_B_2_2'),
+				're_2' => array('V_B_3_1','V_B_3_2')
+			);
+			$refueling_equipment_during = array(
+				'Inlet Pressure Indicator','PCV Monitor Indicator','PCV Air Reference Indicator','PDG Indicator');
+			$refueling_equipment_during_code = array(
+				'V_D_1','V_D_2','V_D_3','V_D_4');
+			
+			$others = array(
+				'Operating Hours Record','Rubber BLock','Oil Absorbent','Sights Glass');
+			$others_code = array(
+						'VI_1','VI_2','VI_3','VI_4');
+			for($i=0;$i<count($truck_conditions_code);$i++){
+				$SData = $this->input->post('S_'.$truck_conditions_code[$i]);
+				$CData = $this->input->post('C_'.$truck_conditions_code[$i]);
+				$Remarks = $this->input->post('Remarks_'.$truck_conditions_code[$i]);
+				$data[$truck_conditions_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+				$data[$truck_conditions_code[$i]]['Remarks'] = $Remarks;
+				$data[$truck_conditions_code[$i]] = serialize($data[$truck_conditions_code[$i]]);
+				if($SData == 0 && $CData == 1){
+					$has_c = true;
+					$kerusakan = $truck_conditions[$i].": ".$Remarks."\n";
+					array_push($data_kerusakan, $kerusakan); 
+				}
+			};
+			for($i=0;$i<count($tank_condition_code);$i++){
+				$SData = $this->input->post('S_'.$tank_condition_code[$i]);
+				$CData = $this->input->post('C_'.$tank_condition_code[$i]);
+				$Remarks = $this->input->post('Remarks_'.$tank_condition_code[$i]);
+				$data[$tank_condition_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+				$data[$tank_condition_code[$i]]['Remarks'] = $Remarks;
+				$data[$tank_condition_code[$i]] = serialize($data[$tank_condition_code[$i]]);
+				if($SData == 0 && $CData == 1){
+					$has_c = true;
+					$kerusakan = $tank_condition[$i].": ".$Remarks."\n";
+					array_push($data_kerusakan, $kerusakan); 
+				}
+			};
+			for($i=0;$i<count($safety_equipment_code);$i++){
+				$SData = $this->input->post('S_'.$safety_equipment_code[$i]);
+				$CData = $this->input->post('C_'.$safety_equipment_code[$i]);
+				$Remarks = $this->input->post('Remarks_'.$safety_equipment_code[$i]);
+				$data[$safety_equipment_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+				$data[$safety_equipment_code[$i]]['Remarks'] = $Remarks;
+				$data[$safety_equipment_code[$i]] = serialize($data[$safety_equipment_code[$i]]);
+				if($SData == 0 && $CData == 1){
+					$has_c = true;
+					$kerusakan = $safety_equipment[$i].": ".$Remarks."\n";
+					array_push($data_kerusakan, $kerusakan); 
+				}
+			};
+			for($i=0;$i<count($refueling_equipment_before_code);$i++){
+				if($i <3){
+					for($j=0; $j<count($sub_re_code["re_$i"]);$j++){
+						$SData = $this->input->post('S_'.$sub_re_code["re_$i"][$j]);
+						$CData = $this->input->post('C_'.$sub_re_code["re_$i"][$j]);
+						$Remarks = $this->input->post('Remarks_'.$sub_re_code["re_$i"][$j]);
+						$data[$sub_re_code["re_$i"][$j]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+						$data[$sub_re_code["re_$i"][$j]]['Remarks'] = $Remarks;
+						$data[$sub_re_code["re_$i"][$j]] = serialize($data[$sub_re_code["re_$i"][$j]]);
+						if($SData == 0 && $CData == 1){
+							$has_c = true;
+							$kerusakan = $refueling_equipment_before[$i]." ".$sub_re["re_$i"][$j].": ".$Remarks."\n";
+							array_push($data_kerusakan, $kerusakan); 
+						}
+					}
+					
+				}else{	
+					$SData = $this->input->post('S_'.$refueling_equipment_before_code[$i]);
+					$CData = $this->input->post('C_'.$refueling_equipment_before_code[$i]);
+					$Remarks = $this->input->post('Remarks_'.$refueling_equipment_before_code[$i]);
+					$data[$refueling_equipment_before_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+					$data[$refueling_equipment_before_code[$i]]['Remarks'] = $Remarks;
+					$data[$refueling_equipment_before_code[$i]] = serialize($data[$refueling_equipment_before_code[$i]]);
+					if($SData == 0 && $CData == 1){
+						$has_c = true;
+						$kerusakan = $refueling_equipment_before[$i].": ".$Remarks."\n";
+						array_push($data_kerusakan, $kerusakan); 
+					}
+				}
+			};
+			for($i=0;$i<count($refueling_equipment_during_code);$i++){
+				$SData = $this->input->post('S_'.$refueling_equipment_during_code[$i]);
+				$CData = $this->input->post('C_'.$refueling_equipment_during_code[$i]);
+				$Remarks = $this->input->post('Remarks_'.$refueling_equipment_during_code[$i]);
+				$data[$refueling_equipment_during_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+				$data[$refueling_equipment_during_code[$i]]['Remarks'] = $Remarks;
+				$data[$refueling_equipment_during_code[$i]] = serialize($data[$refueling_equipment_during_code[$i]]);
+				if($SData == 0 && $CData == 1){
+					$has_c = true;
+					$kerusakan = $refueling_equipment_during[$i].": ".$Remarks."\n";
+					array_push($data_kerusakan, $kerusakan); 
+				}
+			};
+			for($i=0;$i<count($others_code);$i++){
+				$SData = $this->input->post('S_'.$others_code[$i]);
+				$CData = $this->input->post('C_'.$others_code[$i]);
+				$Remarks = $this->input->post('Remarks_'.$others_code[$i]);
+				$data[$others_code[$i]]['check'] = $SData == 1 ? 'S' : ($CData == 1  ? 'C' : '');
+				$data[$others_code[$i]]['Remarks'] = $Remarks;
+				$data[$others_code[$i]] = serialize($data[$others_code[$i]]);
+				if($SData == 0 && $CData == 1){
+					$has_c = true;
+					$kerusakan = $others[$i].": ".$Remarks."\n";
+					array_push($data_kerusakan, $kerusakan); 
+				}
+			};
+			
+			$data['day'] = $day;
+			$data['date'] = $date;
+			$data['time'] = $time;
+			$data['sarfas'] = $sarfas;
+			$data['group'] = $group;
+			$new_data_kerusakan = '';
+			foreach($data_kerusakan as $dk){
+				$new_data_kerusakan = $new_data_kerusakan.$dk;
+			}	
+			// print_r($data_kerusakan);
+			// echo nl2br($new_data_kerusakan);
+			if($has_c == true){
+				$this->SetNewMaintenanceReport($new_data_kerusakan,$sarfas);
+				// echo "NEED TO SET MAINTENANCE REPORT";
+			}
+			$this->InsertData($data,'checklist_value');
+			// print_r($insert);
+			
+			$alerts = GenerateDataAlert('success','Berhasil menambahkan laporan');
+        	// print_r($insert);
 	    }catch(Exception $e){
-        // print_r("<br>");
-        // print_r("<br>");
-	    //     print_r($e);
 			$alerts = GenerateDataAlert('failed',$e->getMessage());
 		}
 		$this->session->set_flashdata('alerts', $alerts);
 		return redirect('checklist', 'GET');
 		
-	}
-	public function add_laporan(){
-	    $data['sarfas'] = $this->input->post('sarfas');
-	    $data['priority'] = $this->input->post('priority');
-	    $data['laporan_kerusakan'] = $this->input->post('laporan_kerusakan');
-		$data['tgl'] = date('Y-m-d');
-		try{
-			$num = $this->GetLaporanNumber();
-			$no_maintenance = 'M'.$num.'/'.GetRomawi(date('m')).'/'.date('Y');
-			$upload = $this->DataModel->uploadFile('dokumen', 'file/maintenance', 10, 'jpg|jpeg|png', 'file_lampiran_' . str_replace('/', '-', $no_maintenance));
-            if ($upload == NULL) {
-                $alerts = GenerateDataAlert('failed', 'Upload File Gagal!');
-                $this->session->set_flashdata('alerts', $alerts);
-                return redirect('maintenance', 'GET');
-            }
-            $data['lampiran_1'] = $upload;
-            $data['no_laporan'] = $no_maintenance;
-			$data['status_laporan'] = 'Kerusakan dilaporkan';
-			$data['author'] = $this->session->userdata('username');
-			$this->InsertData($data,'laporan');
-            $alerts = GenerateDataAlert('success','Berhasil menambahkan laporan');
-        }catch(Exception $e){
-			// echo $e->getMessage();
-            $alerts = GenerateDataAlert('failed',$e->getMessage());
-			
-        }
-        // print_r($alerts);
-        $this->session->set_flashdata('alerts', $alerts);
-		redirect("maintenance");
-	   // print_r($data);
-	}
-	public function proses_laporan(){
-        $id = $this->input->post('id');
-		$data['tgl_proses'] = date('Y-m-d');
-        $data['type'] = $this->input->post('type');
-        $data['processor'] = $this->session->userdata('username');
-        $data['status_laporan'] = 'Dalam proses';
-        try{
-			$this->UpdateDataLaporan($data,$id);
-			$alerts = GenerateDataAlert('success','Laporan kerusakan berhasil di proses');
-		}catch(Exception $e){
-			$alerts = GenerateDataAlert('failed',$e->getMessage());
-		}
-		$this->session->set_flashdata('alerts', $alerts);
-		redirect('maintenance','GET');
-	}
-	
-	public function finish_laporan(){
-        $id = $this->input->post('id');
-		$data['tgl_selesai'] = date('Y-m-d');
-        $data['pelaksanaan'] = $this->input->post('pelaksanaan');
-        $data['saran'] = $this->input->post('saran');
-        $data['status_laporan'] = 'Menunggu approval OH';
-        try{
-            
-			$upload = $this->DataModel->uploadFile('dokumen', 'file/maintenance', 10, 'jpg|jpeg|png', 'file_lampiran_2_' . str_replace('/', '-', $id));
-			if ($upload == NULL) {
-                $alerts = GenerateDataAlert('failed', 'Upload File Gagal!');
-                $this->session->set_flashdata('alerts', $alerts);
-                return redirect('maintenance', 'GET');
-            }
-            $data['lampiran_2'] = $upload;
-			$this->UpdateDataLaporan($data,$id);
-			$alerts = GenerateDataAlert('success','Laporan kerusakan berhasil di selesaikan');
-		}catch(Exception $e){
-			$alerts = GenerateDataAlert('failed',$e->getMessage());
-		}
-		$this->session->set_flashdata('alerts', $alerts);
-		redirect('maintenance','GET');
-	}
-	public function approve_laporan(){
-        $id = $this->input->post('id_laporan');
-        $data['status_laporan'] = 'Selesai diperbaiki';
-        // print_r($id);
-        try{
-			$this->UpdateDataLaporan($data,$id);
-			$alerts = GenerateDataAlert('success','Laporan kerusakan berhasil di approve');
-		}catch(Exception $e){
-			$alerts = GenerateDataAlert('failed',$e->getMessage());
-		}
-		$this->session->set_flashdata('alerts', $alerts);
-		redirect('maintenance','GET');
-	}
-	
-	private function GetLaporanNumber(){
-		$select = '*';
-	    $table = 'laporan_number';
-	    $col = array('month','year');
-	    $par = array(date('m'),date('Y'));
-	    $num = $this->DataModel->GetData($select,$table,$col,$par);
-		if($num == null){
-			$new = array(
-				'month'=>date('m'),
-				'year'=>date('Y'),
-				'number'=>001
-			);
-			$this->InsertData($new,$table);
-			$data_num = '001';
-		}else{
-			$data_num = $num[0]['number'] + 1;
-			$data_num = str_pad($data_num, 3, '0', STR_PAD_LEFT);
-			$this->UpdateDataLaporanNumber($data_num,$num[0]['id_laporan_number']);
-		}
-		return $data_num;
-	}
-	private function UpdateDataLaporanNumber($data_num,$id){
-        $table = 'laporan_number';
-		$col = array('id_laporan_number');
-		$par = array($id);
-		$data['number'] = $data_num;
-		$update = $this->DataModel->UpdateData($table,$col,$par,$data);
-		if($update['code'] != 0){
-			throw new Exception($update['message']);
-			// throw new Exception('Unknown error occurred');
-		}
-		return true;
 	}
 	private function UpdateDataLaporan($data,$id){
         $table = 'laporan';
@@ -314,7 +279,7 @@ class Checklist extends CI_Controller {
         !$from ?: $where['a.date >= '] = date_format(date_create_from_format('d/m/Y', $from), 'Ymd');
         !$to ?: $where['a.date <= '] = date_format(date_create_from_format('d/m/Y', $to), 'Ymd');
 
-		$order_text = ['a.date DESC, a.sarfas ASC', 'a.date ASC, a.sarfas ASC'];
+		$order_text = ['a.date DESC, a.time DESC, a.sarfas ASC', 'a.date ASC, a.time DESC, a.sarfas ASC'];
 
 	    
 	    
@@ -424,4 +389,70 @@ class Checklist extends CI_Controller {
         $laporan['data'] = $this->DataModel->GetDataGroup($select, $table, $where, $like, $order, $group, $join);
         return $laporan;
 	}
+
+	private function SetNewMaintenanceReport($data_kerusakan,$sarfas){
+	    $data['sarfas'] = $sarfas;
+	    $data['priority'] = 'Tinggi';
+	    $data['laporan_kerusakan'] = $data_kerusakan;
+		$data['tgl'] = date('Y-m-d');
+		// try{
+			$num = $this->GetLaporanNumber();
+			$no_maintenance = 'M'.$num.'/'.GetRomawi(date('m')).'/'.date('Y');
+			// $upload = $this->DataModel->uploadFile('dokumen', 'file/maintenance', 10, 'jpg|jpeg|png', 'file_lampiran_' . str_replace('/', '-', $no_maintenance));
+            // if ($upload == NULL) {
+            //     $alerts = GenerateDataAlert('failed', 'Upload File Gagal!');
+            //     $this->session->set_flashdata('alerts', $alerts);
+            //     return redirect('maintenance', 'GET');
+            // }
+            // $data['lampiran_1'] = $upload;
+            $data['lampiran_1'] = '';
+            $data['no_laporan'] = $no_maintenance;
+			$data['status_laporan'] = 'Kerusakan dilaporkan';
+			$data['author'] = $this->session->userdata('username');
+			$this->InsertData($data,'laporan');
+            $alerts = GenerateDataAlert('success','Berhasil menambahkan laporan');
+        // }catch(Exception $e){
+			// echo $e->getMessage();
+            // $alerts = GenerateDataAlert('failed',$e->getMessage());
+			
+        // }
+        // print_r($alerts);
+	   // print_r($data);
+	}
+	
+	private function GetLaporanNumber(){
+		$select = '*';
+	    $table = 'laporan_number';
+	    $col = array('month','year');
+	    $par = array(date('m'),date('Y'));
+	    $num = $this->DataModel->GetData($select,$table,$col,$par);
+		if($num == null){
+			$new = array(
+				'month'=>date('m'),
+				'year'=>date('Y'),
+				'number'=>001
+			);
+			$this->InsertData($new,$table);
+			$data_num = '001';
+		}else{
+			$data_num = $num[0]['number'] + 1;
+			$data_num = str_pad($data_num, 3, '0', STR_PAD_LEFT);
+			$this->UpdateDataLaporanNumber($data_num,$num[0]['id_laporan_number']);
+		}
+		return $data_num;
+	}
+	
+	private function UpdateDataLaporanNumber($data_num,$id){
+        $table = 'laporan_number';
+		$col = array('id_laporan_number');
+		$par = array($id);
+		$data['number'] = $data_num;
+		$update = $this->DataModel->UpdateData($table,$col,$par,$data);
+		if($update['code'] != 0){
+			throw new Exception($update['message']);
+			// throw new Exception('Unknown error occurred');
+		}
+		return true;
+	}
+	
 }

@@ -112,7 +112,7 @@ class User extends CI_Controller {
 		$par = array($id);
 		$data['status'] = 'CLOSE';
 		$Update = $this->UserModel->UpdateData($table,$col,$par,$data);
-		if($update['code'] != 0){
+		if($Update['code'] != 0){
 			// throw new Exception($update['message']);
 			throw new Exception('Unknown error occurred');
 		}
@@ -123,7 +123,7 @@ class User extends CI_Controller {
 		$col = array('id_user');
 		$par = array($id);
 		$Update = $this->UserModel->UpdateData($table,$col,$par,$data);
-		if($update['code'] != 0){
+		if($Update['code'] != 0){
 			// throw new Exception($update['message']);
 			throw new Exception('Unknown error occurred');
 		}

@@ -35,7 +35,7 @@
                             <select name="sarfas" id="sarfas_list" style="width: 100% !important;" class="js-example-basic-single col-sm-12 form-control" required>
                                 <option value="">Pilih Sarfas</option>
                                 <?php foreach($sarfas as $s){?>
-                                    <option value="<?php echo $s['id_sarfas'];?>"><?php echo $s['jenis'].' - '.$s['merk'].' - '.$s['kapasitas'].' - '.$s['tahun_perolehan'];?></option>
+                                    <option value="<?php echo $s['id_filter'];?>"><?php echo $s['kode'].' - '.$s['type'];?></option>
                                 <?php }?>
                             </select>
                         </div>
