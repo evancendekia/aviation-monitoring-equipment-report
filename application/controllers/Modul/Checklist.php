@@ -35,6 +35,23 @@ class Checklist extends CI_Controller {
 		$data['role'] = $role = $this->session->userdata('role');
         $id = $this->input->get('id');
 		$data['checklist'] = $this->GetDetailChecklistData($id);
+		$data['laporan'] = $this->GetAllLaporanData($id);
+		$data['sarfas'] = $this->GetAllSarfasData();
+		$data['data'] = $data;
+		$this->load->view('layout/layout',$data);
+        // print_r($data['checklist'][0]);
+        // print_r(unserialize($data['checklist'][0]['II_1']));
+	}
+	public function related(){
+		$data['menu'] = 'Modul';
+		$data['page'] = 'related_report';
+		$data['folder'] = $data['menu']."/checklist";
+        $data['js'] = 'js_checklist';
+		$data['alerts'] = $this->session->flashdata('alerts');
+		$data['role'] = $role = $this->session->userdata('role');
+        $id = $this->input->get('id');
+		$data['checklist'] = $checklist = $this->GetDetailChecklistData($id);
+		$data['laporan'] = $this->GetAllLaporanData($id);
 		$data['sarfas'] = $this->GetAllSarfasData();
 		$data['data'] = $data;
 		$this->load->view('layout/layout',$data);
@@ -216,17 +233,21 @@ class Checklist extends CI_Controller {
 			$data['time'] = $time;
 			$data['sarfas'] = $sarfas;
 			$data['group'] = $group;
+			$data['evident'] = count($data_kerusakan);
 			$new_data_kerusakan = '';
 			foreach($data_kerusakan as $dk){
 				$new_data_kerusakan = $new_data_kerusakan.$dk;
 			}	
 			// print_r($data_kerusakan);
 			// echo nl2br($new_data_kerusakan);
+			
+			$id_checklist = $this->InsertDataGetId($data,'checklist_value');
 			if($has_c == true){
-				$this->SetNewMaintenanceReport($new_data_kerusakan,$sarfas);
+				for($i=0;$i<count($data_kerusakan);$i++){
+					$this->SetNewMaintenanceReport($data_kerusakan[$i],$sarfas, $id_checklist);
+				}
 				// echo "NEED TO SET MAINTENANCE REPORT";
 			}
-			$this->InsertData($data,'checklist_value');
 			// print_r($insert);
 			
 			$alerts = GenerateDataAlert('success','Berhasil menambahkan laporan');
@@ -257,6 +278,14 @@ class Checklist extends CI_Controller {
 		}
 		return true;
 	}
+	private function InsertDataGetId($data,$table){
+		$insert = $this->DataModel->InsertDataGetId($table,$data);
+		if($insert['error']['code'] != 0){
+// 			throw new Exception('Oops! Something went wrong');
+			throw new Exception($insert);
+		}
+		return $insert['id'];
+	}
 	private function GetAllSarfasData(){
 		$select = '*';
 		$table = 'filter';
@@ -283,7 +312,7 @@ class Checklist extends CI_Controller {
 
 	    
 	    
-        $select = 'id_checklist_value AS id, day, date, time, sarfas, group, b.type, b.kode';
+        $select = 'id_checklist_value AS id, evident, day, date, time, sarfas, group, b.type, b.kode';
 	    $table = 'checklist_value AS a';
         
         $order = $order_text[$urutkan - 1];
@@ -313,10 +342,21 @@ class Checklist extends CI_Controller {
 		$like = null;
 		
         return $this->DataModel->GetDataGroup($select, $table, $where, $like, $order, $group, $join);
-		// $laporan['data'] = $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
-		// $laporan['total'] = $this->DataModel->GetTotalDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);
-		// return $laporan;
-	    // return $this->DataModel->GetDataJoin($select,$table,$table2,$join_param);  
+	}
+
+	private function GetAllLaporanData($id){
+
+		$where = "id_checklist = '$id'";
+		$select = '*';
+		$table = 'laporan AS a';
+		$order = null;	
+		$group = null;
+		$join = [
+            ['table' => 'filter AS b', 'condition' => 'a.sarfas=b.id_filter', 'type' => 'left'],	
+        ];
+		$like = null;
+		
+        return $this->DataModel->GetDataGroup($select, $table, $where, $like, $order, $group, $join);
 	}
 	// private function GetAllLaporanData($per_page,$keyword,$nip){
 	    
@@ -390,9 +430,10 @@ class Checklist extends CI_Controller {
         return $laporan;
 	}
 
-	private function SetNewMaintenanceReport($data_kerusakan,$sarfas){
+	private function SetNewMaintenanceReport($data_kerusakan,$sarfas, $id_checklist = null){
+		$data['id_checklist'] = $id_checklist;
 	    $data['sarfas'] = $sarfas;
-	    $data['priority'] = 'Tinggi';
+	    $data['priority'] = 'Belum Ditentukan';
 	    $data['laporan_kerusakan'] = $data_kerusakan;
 		$data['tgl'] = date('Y-m-d');
 		// try{
@@ -407,8 +448,8 @@ class Checklist extends CI_Controller {
             // $data['lampiran_1'] = $upload;
             $data['lampiran_1'] = '';
             $data['no_laporan'] = $no_maintenance;
-			$data['status_laporan'] = 'Kerusakan dilaporkan';
-			$data['author'] = $this->session->userdata('username');
+			$data['status_laporan'] = "Menunggu Lampiran Evident";
+			$data['author'] = $this->session->userdata('username');	
 			$this->InsertData($data,'laporan');
             $alerts = GenerateDataAlert('success','Berhasil menambahkan laporan');
         // }catch(Exception $e){

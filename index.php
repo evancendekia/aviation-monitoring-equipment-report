@@ -56,7 +56,7 @@
 	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 	$server_ip = getHostByName(getHostName());
 	// print_r($server_ip);
-	if (preg_match("/^(127\.0\.|10\.0\.)|(172\.19\.80\.1)|(192\.168\.1\.146)|(172\.22\.160\.1)|(172\.18\.208\.1)|(192\.168\.43\.12)/i", $server_ip) ) {
+	if (preg_match("/^(127\.0\.|10\.0\.)|(172\.22\.16\.1)|(192\.168\.1\.146)|(172\.22\.160\.1)|(172\.18\.208\.1)|(192\.168\.43\.12)/i", $server_ip) ) {
 		define("ENVIRONMENT", "development");
 		define("BASEURL", "http://localhost/checklist");
 	} else {

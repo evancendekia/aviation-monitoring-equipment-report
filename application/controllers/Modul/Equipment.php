@@ -54,7 +54,7 @@ class Equipment extends CI_Controller {
         //     ['table' => 'jenis AS b', 'condition' => 'a.id_jenis=b.id_jenis', 'type' => 'left']
         // ];
 		$join = null;
-        $url = 'equipment';
+        $url = 'sarfas';
         // $like = is_string($keyword) ? ['LOWER(NAMA_SUPPLIER)' => strtolower($keyword)] : NULL;
 		$like = null;
 		$filter['data'] = $this->DataModel->GetDataPagination($select, $table, $join, $url, $per_page, $where, $order, $group, $like);

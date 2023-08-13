@@ -19,6 +19,7 @@ class Maintenance extends CI_Controller {
 		$data['alerts'] = $this->session->flashdata('alerts');
 		$data['role'] = $role = $this->session->userdata('role');
 		$data['laporan'] = $this->GetAllLaporanData(10,null,null);
+		$data['page_num'] = $this->input->get('page') ? $this->input->get('page') : 1;
 		$data['laporan_all'] = $this->GetAllLaporanDataAll();
 		$data['sarfas'] = $this->GetAllSarfasData();
 		$this->load->view('layout/layout',$data);
@@ -53,6 +54,43 @@ class Maintenance extends CI_Controller {
         // print_r($alerts);
         $this->session->set_flashdata('alerts', $alerts);
 		redirect("maintenance");
+	   // print_r($data);
+	}
+	
+	public function add_evident(){
+		$id_laporan = $this->input->post('id_laporan');
+		$origin = $this->input->post('origin');
+		$id_checklist = $this->input->post('id_checklist');
+		try{
+			$laporan = $this->GetSpecificLaporan($id_laporan);
+			if(isset($laporan) && $laporan[0] != null){
+				$no_maintenance = $laporan[0]['no_laporan'];
+				$upload = $this->DataModel->uploadFile('dokumen', 'file/maintenance', 10, 'jpg|jpeg|png', 'file_lampiran_' . str_replace('/', '-', $no_maintenance));
+				if ($upload == NULL) {
+					$alerts = GenerateDataAlert('failed', 'Upload File Gagal!');
+					$this->session->set_flashdata('alerts', $alerts);
+					return redirect('maintenance', 'GET');
+				}
+				$data['lampiran_1'] = $upload;
+				$data['status_laporan'] = 'Kerusakan dilaporkan';
+				$data['priority'] = $this->input->post('priority');
+				$this->UpdateDataLaporan($data,$id_laporan);
+				$alerts = GenerateDataAlert('success','Berhasil upload data evident');
+				if($origin == 'checklist'){
+					$this->UpdateEvidentNumber($id_checklist);
+				}
+			}
+        }catch(Exception $e){
+			// echo $e->getMessage();
+            $alerts = GenerateDataAlert('failed',$e->getMessage());
+        }
+        // print_r($alerts);
+        $this->session->set_flashdata('alerts', $alerts);
+		if($origin == 'maintenance'){
+			redirect("maintenance");
+		}else{
+			redirect("checklist/detail?id=$id_checklist");
+		}
 	   // print_r($data);
 	}
 	public function proses_laporan(){
@@ -178,6 +216,13 @@ class Maintenance extends CI_Controller {
 		$order = 'kode ASC';
 		return $this->DataModel->GetData($select,$table,$col,$par,$order);
 	}
+	private function GetSpecificLaporan($id_laporan){
+		$select = '*';
+		$table = 'laporan';
+		$col = array('id_laporan');
+		$par = array($id_laporan);
+		return $this->DataModel->GetData($select,$table,$col,$par);
+	}
 	private function GetAllLaporanData($per_page,$keyword,$nip){
 	    
 		$from = $this->input->get('from');
@@ -247,5 +292,23 @@ class Maintenance extends CI_Controller {
         
         $laporan['data'] = $this->DataModel->GetDataGroup($select, $table, $where, $like, $order, $group, $join);
         return $laporan;
+	}
+	
+	private function UpdateEvidentNumber($id_checklist){
+		$select = 'evident';
+		$table = 'checklist_value';
+		$col = array('id_checklist_value');
+		$par = array($id_checklist);
+		$data_checklist = $this->DataModel->GetData($select,$table,$col,$par);
+
+		if($data_checklist[0]['evident'] > 0){
+			$data['evident'] = $data_checklist[0]['evident'] - 1;
+			$update = $this->DataModel->UpdateData($table,$col,$par,$data);
+			if($update['code'] != 0){
+				throw new Exception($update['message']);
+				// throw new Exception('Unknown error occurred');
+			}
+			return true;
+		}
 	}
 }

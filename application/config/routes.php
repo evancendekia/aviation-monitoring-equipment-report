@@ -68,6 +68,7 @@ $route['checklist']['GET'] = 'Modul/Checklist/index';
 $route['checklist/add']['GET'] = 'Modul/Checklist/add_form';
 $route['checklist/add']['POST'] = 'Modul/Checklist/add';
 $route['checklist/detail']['GET'] = 'Modul/Checklist/detail';
+$route['checklist/related-report']['GET'] = 'Modul/Checklist/related';
 
 $route['maintenance']['GET'] = 'Modul/Maintenance/index';
 $route['maintenance/add']['GET'] = 'Modul/Maintenance/index';
@@ -78,6 +79,8 @@ $route['maintenance/finish']['GET'] = 'Modul/Maintenance/index';
 $route['maintenance/finish']['POST'] = 'Modul/Maintenance/finish_laporan';
 $route['maintenance/approve']['GET'] = 'Modul/Maintenance/index';
 $route['maintenance/approve']['POST'] = 'Modul/Maintenance/approve_laporan';
+$route['maintenance/add-evident']['GET'] = 'Modul/Maintenance/index';
+$route['maintenance/add-evident']['POST'] = 'Modul/Maintenance/add_evident';
 
 
 // $route['sarfas']['GET'] = 'Modul/Sarfas/index';

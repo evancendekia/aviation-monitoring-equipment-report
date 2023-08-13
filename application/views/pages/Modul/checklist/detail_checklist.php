@@ -8,7 +8,7 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Laporan Kerusakan</h5>
+                <h5>Checklist</h5>
                 <div class="float-right card-header-right">
                     <div class="btn-group">
                         <div class="px-2">
@@ -111,7 +111,7 @@
                     <div class="col-sm-12">
                         <ul class="nav nav-tabs border-tab mb-0" id="top-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="top-home-tab" data-toggle="tab" href="#I_II" role="tab" aria-controls="top-home" aria-selected="false">I & II</a>
+                                <a class="nav-link <?php if($this->input->get('sub') != 'related'){echo "active";}?>" id="top-home-tab" data-toggle="tab" href="#I_II" role="tab" aria-controls="top-home" aria-selected="false">I & II</a>
                                 <div class="material-border"></div>
                             </li>
                             <li class="nav-item">
@@ -130,9 +130,13 @@
                                 <a class="nav-link" id="brand-top-tab" data-toggle="tab" href="#VI" role="tab" aria-controls="top-brand" aria-selected="true">VI</a>
                                 <div class="material-border"></div>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php if($this->input->get('sub') == 'related'){echo "active";}?>" id="brand-top-tab" data-toggle="tab" href="#Related" role="tab" aria-controls="related" aria-selected="true">Related Report</a>
+                                <div class="material-border"></div>
+                            </li>
                         </ul>
                         <div class="tab-content" id="top-tabContent">
-                            <div class="tab-pane fade  active show" id="I_II" role="tabpanel" aria-labelledby="top-home-tab">
+                            <div class="tab-pane fade <?php if($this->input->get('sub') != 'related'){echo "active show";}?>" id="I_II" role="tabpanel" aria-labelledby="top-home-tab">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped align-items-center mb-0">
                                         <thead>
@@ -353,6 +357,92 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="tab-pane fade  <?php if($this->input->get('sub') == 'related'){echo "active show";}?>" id="Related" role="tabpanel" aria-labelledby="contact-top-tab">
+                                <div class="table-responsive">
+                                    <table class="table f-12 table-hover align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-uppercase text-secondary">#</th>
+                                                <th class="text-center text-uppercase text-secondary">No Laporan</th>
+                                                <th class="text-center text-uppercase text-secondary">Laporan Kerusakan</th>
+                                                <th class="text-center text-uppercase text-secondary">Prioritas</th>
+                                                <th class="text-center text-uppercase text-secondary">Status</th>
+                                                <th class="text-center text-uppercase text-secondary">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <?php 
+                                                    function color_switcher($stat){
+                                                        switch($stat){
+                                                            case 'Kerusakan dilaporkan' : return 'primary'; break;
+                                                            case 'Dalam proses' : return 'warning'; break;
+                                                            case 'Menunggu approval OH' : return 'secondary'; break;
+                                                            case 'Selesai diperbaiki' : return 'success'; break;
+                                                            case 'Menunggu Lampiran Evident' : return 'danger'; break;
+                                                            default :  return 'primary'; break;
+                                                        }
+                                                    }
+                                                    function color_switcher2($priority){
+                                                        switch($priority){
+                                                            case 'Tinggi' : return 'danger'; break;
+                                                            case 'Sedang' : return 'warning'; break;
+                                                            case 'Rendah' : return 'success'; break;
+                                                        }
+                                                    }
+                                                ?>
+                                            <?php $no=1; foreach($laporan as $l){?>
+                                                
+                                                <tr>
+                                                    <td class="align-middle text-center"><?php echo $no;?></td>
+                                                    <td class="align-middle text-center"><?php echo $l['no_laporan'];?> </td>
+                                                    <td class="align-middle" style="width:30%">
+                                                        <?php 
+                                                            if(strlen($l['laporan_kerusakan']) > 40){
+                                                                echo substr($l['laporan_kerusakan'],0,40)."...";  
+                                                            }else{
+                                                                echo $l['laporan_kerusakan'];
+                                                            };
+                                                        ?>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span class="badge badge-<?php echo color_switcher2($l['priority']);?> f-12">
+                                                            <?php echo $l['priority'];?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span class="badge badge-<?php echo color_switcher($l['status_laporan']);?> f-12">
+                                                            <?php echo $l['status_laporan']; if($l['status_laporan'] == 'Dalam proses'){ echo ' ('.$l['laporan_type'].')';}?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <?php if($role == 3 && $l['status_laporan'] == 'Menunggu approval OH'){?>
+                                                            
+                                                            <form id="form-filter" method="post" action="<?php echo base_url('maintenance/approve');?>">
+                                                                <input type="hidden" name="id_laporan" value="<?php echo $l['id_laporan']?>">
+                                                                <button type="submit" class="btn btn-outline-success btn-sm px-2 mb-1">
+                                                                    <i class="fa fa-file-text"></i>
+                                                                    Approve
+                                                                </button>
+                                                                
+                                                            </form>
+                                                        <?php }?>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm px-2" onclick='ShowDetailLaporan(<?php echo json_encode($l);?>,<?php echo $role;?>)'>
+                                                            <i class="fa fa-file-text"></i>
+                                                            View Details
+                                                        </button>
+                                                        <?php if($l['lampiran_1']  == null && $l['author'] == $this->session->userdata('username')){?>
+                                                            <button type="button" class="btn btn-outline-danger btn-sm px-2 my-1"  onclick='UploadEvident(<?php echo json_encode($l);?>,<?php echo $role;?>,"checklist",<?php echo $this->input->get("id");?>)'>
+                                                                <i class="fa fa-upload"></i>
+                                                                Upload Evident
+                                                            </button>
+                                                        <?php }?>
+                                                    </td>
+                                                </tr>
+                                            <?php $no++;}?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -360,5 +450,7 @@
             </div>
         </div>
     </div>
+<?php $this->load->view('modals/maintenance/modal_upload_evident');?>
 <?php $this->load->view('modals/checklist/modal_sarfas');?>
+<?php $this->load->view('modals/maintenance/modal_laporan_maintenance');?>
       

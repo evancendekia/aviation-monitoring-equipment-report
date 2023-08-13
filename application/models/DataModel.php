@@ -247,6 +247,13 @@ class DataModel extends CI_Model {
             return $newname;
         }
     }
+    function InsertDataGetId($table, $data) {
+        $this->db->db_debug = false;
+        $this->db->insert($table, $data);
+        $return['error'] = $this->db->error();
+        $return['id'] = $this->db->insert_id('id_record_pdg');
+        return $return;
+    }
 
 }
 

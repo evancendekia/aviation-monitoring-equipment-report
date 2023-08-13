@@ -12,14 +12,14 @@
                             </div>  
                         </div>
                     <?php }?> -->
-                    <?php //if($role == 1){?>
+                    <?php if($role == 1){?>
                         
                         <div class="px-2">
                             <a href="<?php echo base_url("checklist/add");?>">
                                 <button type="button" class="btn btn-secondary font-weight-bold">Input Data</button>
                             </a>
                         </div>      
-                    <?php //}?>
+                    <?php }?>
                 </div>
             </div>
             
@@ -118,11 +118,19 @@
                                     <td class="align-middle text-center">
                                         <div class="btn-group">
                                             <a href="<?php echo base_url('checklist/detail')?>?id=<?php echo $c['id'];?>">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm text-xs px-2" data-toggle="modal" data-target="#ResetPasswordModal" onClick=''>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm text-xs px-2" data-toggle="modal" onClick=''>
                                                     <i class="fa fa-file-text"></i>
                                                     View Details
                                                 </button>
                                             </a>
+                                            <?php if($c['evident'] > 0){?>
+                                                <a href="<?php echo base_url('checklist/detail')?>?id=<?php echo $c['id'];?>&sub=related">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm text-xs px-2 mx-2" data-toggle="modal" onClick=''>
+                                                        <i class="fa fa-file-text"></i>
+                                                        Upload Evident!
+                                                    </button>
+                                                </a>
+                                            <?php }?>
                                         </div>
                                     </td>
                                 </tr>

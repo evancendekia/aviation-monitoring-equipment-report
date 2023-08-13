@@ -3,7 +3,7 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Laporan Kerusakan</h5>
+                <h5>Checklist</h5>
                 <div class="float-right card-header-right">
                     <div class="btn-group">
                         <!--<div class="px-2">-->

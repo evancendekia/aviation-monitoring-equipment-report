@@ -129,6 +129,8 @@
                                             case 'Dalam proses' : return 'warning'; break;
                                             case 'Menunggu approval OH' : return 'secondary'; break;
                                             case 'Selesai diperbaiki' : return 'success'; break;
+                                            case 'Menunggu Lampiran Evident' : return 'danger'; break;
+                                            default :  return 'primary'; break;
                                         }
                                     }
                                     function color_switcher2($priority){
@@ -142,7 +144,7 @@
                             <?php $no=1; foreach($laporan['data'] as $l){?>
                                 
                                 <tr>
-                                    <td class="align-middle text-center"><?php echo $no;?></td>
+                                    <td class="align-middle text-center"><?php echo (10*($page_num-1))+$no;?></td>
                                     <td class="align-middle text-center"><?php echo $l['no_laporan'];?> </td>
                                     <td class="align-middle text-center"><?php echo date_format(date_create($l['tgl']),"d M Y");?></td>
                                     <td class="align-middle text-center" style="width:20%"><?php echo $l['kode'].' - '.$l['type'];?></td>
@@ -181,6 +183,12 @@
                                             <i class="fa fa-file-text"></i>
                                             View Details
                                         </button>
+                                        <?php if($l['lampiran_1']  == null && $l['author'] == $this->session->userdata('username')){?>
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-2 my-1" onclick='UploadEvident(<?php echo json_encode($l);?>,<?php echo $role;?>)'>
+                                                <i class="fa fa-upload"></i>
+                                                Upload Evident
+                                            </button>
+                                        <?php }?>
                                     </td>
                                 </tr>
                             <?php $no++;}?>
@@ -194,6 +202,7 @@
         </div>
     </div>
 </div>
+<?php $this->load->view('modals/maintenance/modal_upload_evident');?>
+      
 <?php $this->load->view('modals/maintenance/modal_add_laporan_maintenance');?>
 <?php $this->load->view('modals/maintenance/modal_laporan_maintenance');?>
-      
